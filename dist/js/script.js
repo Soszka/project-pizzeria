@@ -404,14 +404,12 @@
 
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
-      thisCart.dom.productList = document.querySelector(select.cart.productList);
-      thisCart.dom.deliveryFee = element.querySelector(select.cart.deliveryFee);
+      thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
+      thisCart.dom.deliveryFee = thisCart.dom.wrapper.querySelector(select.cart.deliveryFee);
       thisCart.dom.subtotalPrice = thisCart.dom.wrapper.querySelector(select.cart.subtotalPrice);
       thisCart.dom.totalPrice = thisCart.dom.wrapper.querySelectorAll(select.cart.totalPrice);
       thisCart.dom.totalNumber = thisCart.dom.wrapper.querySelector(select.cart.totalNumber);
     }
-
-
 
     initActions(){
       const thisCart = this;
@@ -424,6 +422,10 @@
 
       thisCart.dom.productList.addEventListener('uptaded', function(){
         thisCart.update();
+      });
+
+      thisCart.dom.productList.addEventListener('remove', function (event){
+        thisCart.remove(event.detail.cartProduct);
       });
     }
 
@@ -472,6 +474,15 @@
       for(let totalPrices of thisCart.dom.totalPrice){
         totalPrices.innerHTML = thisCart.totalPrice;
       }
+    }
+
+    remove(cartProduct){
+      const thisCart = this;
+
+      cartProduct.dom.wrapper.remove();
+      const indexOfRemoveProduct = thisCart.products.indexOf(cartProduct);
+      thisCart.products.splice(indexOfRemoveProduct, 1);
+      thisCart.update();
     }
   }
 
@@ -526,7 +537,25 @@
       thisCartProduct.dom.edit.addEventListener('click', function(event){
         event.preventDefault();
       });
+
+      thisCartProduct.dom.remove.addEventListener('click', function(event){
+        event.preventDefault();
+        thisCartProduct.remove(event);
+      });
     }
+
+    remove(){
+      const thisCartProduct = this;
+
+      const event = new CustomEvent ('remove', {
+        bubbles: true,
+        detail: {
+          cartProduct: thisCartProduct,
+        },
+      });
+      thisCartProduct.dom.wrapper.dispatchEvent(event);
+    }
+
   }
 
   const app = {
