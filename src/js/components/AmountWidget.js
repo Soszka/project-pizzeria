@@ -1,4 +1,4 @@
-import { settings, select, } from '..settings.js';
+import { settings, select, } from '../settings.js';
 
 
 class AmountWidget{
@@ -6,7 +6,6 @@ class AmountWidget{
     const thisWidget = this;
 
     thisWidget.value = settings.amountWidget.defaultValue;
-
     thisWidget.getElements(element);
     thisWidget.setValue(thisWidget.input.value);
     thisWidget.initActions();
@@ -27,14 +26,12 @@ class AmountWidget{
     const newValue = parseInt(value);
     const maxAmount = settings.amountWidget.defaultMax;
     const minAmount = settings.amountWidget.defaultMin;
-
     if(thisWidget.value !== newValue && 
       !isNaN(newValue) && 
       newValue <= maxAmount && 
       newValue >= minAmount){
       thisWidget.value = newValue;
     }
-
     thisWidget.announce();
     thisWidget.input.value = thisWidget.value;
   }
@@ -69,4 +66,3 @@ class AmountWidget{
 }
 
 export default AmountWidget;
-  
