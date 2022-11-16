@@ -12,6 +12,7 @@ class Booking {
     thisBooking.render(element);
     thisBooking.initWidgets();
     thisBooking.getData();
+
   }
 
   getData() {
@@ -138,6 +139,28 @@ class Booking {
     }
   }
 
+  initTables(event) {
+    const thisBooking = this;
+
+    const clickedTable = event.target;
+    if (clickedTable.classList.contains(classNames.booking.tableBooked)) {
+      alert('Ten stolik jest zajęty mistrzuniu');
+    }
+    else if (clickedTable.classList.contains('table')
+    && !clickedTable.classList.contains(classNames.booking.tableBooked)) {
+      const tableId = clickedTable.getAttribute(['data-table']);
+      for (const table of thisBooking.dom.tables){
+        if (table.classList.contains(classNames.booking.tableSelected)
+        && table.getAttribute(['data-table']) !== tableId) {
+          table.classList.remove(classNames.booking.tableSelected);
+        } else {
+          thisBooking.tableSelectedId = tableId;
+          clickedTable.classList.add(classNames.booking.tableSelected);
+        }
+      }
+    }
+  }
+
   render(element) {
     const thisBooking = this;
 
@@ -150,6 +173,7 @@ class Booking {
     thisBooking.dom.datePicker = element.querySelector(select.widgets.datePicker.wrapper);
     thisBooking.dom.hourPicker = element.querySelector(select.widgets.hourPicker.wrapper);
     thisBooking.dom.tables = element.querySelectorAll(select.booking.tables);
+    thisBooking.dom.allTables = element.querySelector(select.booking.allTables);
   }
 
   initWidgets() {
@@ -171,8 +195,15 @@ class Booking {
     thisBooking.dom.hourPicker.addEventListener('updated', function() {
     });
 
-    thisBooking.dom.wrapper.addEventListener('updated', function(){
+    thisBooking.dom.wrapper.addEventListener('updated', function() {
+      for (let table of thisBooking.dom.tables) {
+        table.classList.remove(classNames.booking.tableSelected);
+      }
       thisBooking.updateDOM();
+    });
+
+    thisBooking.dom.allTables.addEventListener('click', function(event) {
+      thisBooking.initTables(event);
     });
   }
 }
