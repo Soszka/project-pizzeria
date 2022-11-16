@@ -161,6 +161,31 @@ class Booking {
     }
   }
 
+  sendBooking() {
+    const thisBooking = this;
+
+    const url = settings.db.url + '/' + settings.db.bookings;
+    const bookingInfo = {
+      date: thisBooking.datePicker.value,
+      hour: thisBooking.hourPicker.value,
+      table: parseInt(thisBooking.tableSelectedId),
+      duration: parseInt(thisBooking.hoursAmount.value),
+      ppl: parseInt(thisBooking.peopleAmount.value),
+      starters: thisBooking.starters,
+      phone: thisBooking.dom.phone.value,
+      address: thisBooking.dom.address.value
+    };
+
+    const options = {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bookingInfo)
+    };
+    fetch(url, options);
+  } 
+
   render(element) {
     const thisBooking = this;
 
@@ -174,10 +199,16 @@ class Booking {
     thisBooking.dom.hourPicker = element.querySelector(select.widgets.hourPicker.wrapper);
     thisBooking.dom.tables = element.querySelectorAll(select.booking.tables);
     thisBooking.dom.allTables = element.querySelector(select.booking.allTables);
+    thisBooking.dom.form = thisBooking.dom.wrapper.querySelector(select.booking.form);
+    thisBooking.dom.submitBtn =  thisBooking.dom.form.querySelector(select.booking.formSubmit);
+    thisBooking.dom.address =  thisBooking.dom.form.querySelector(select.booking.address);
+    thisBooking.dom.phone =  thisBooking.dom.form.querySelector(select.booking.phone);
+    thisBooking.dom.startersBox = thisBooking.dom.form.querySelector(select.booking.startersBox);
   }
 
   initWidgets() {
     const thisBooking = this;
+    thisBooking.starters = [];
 
     thisBooking.peopleAmount = new AmountWidget(thisBooking.dom.peopleAmount);
     thisBooking.dom.peopleAmount.addEventListener('updated', function() {
@@ -204,6 +235,22 @@ class Booking {
 
     thisBooking.dom.allTables.addEventListener('click', function(event) {
       thisBooking.initTables(event);
+    });
+
+    thisBooking.dom.startersBox.addEventListener('change', function(event) {
+      const clickedChceckbox = event.target;
+      if(clickedChceckbox.checked) {
+        thisBooking.starters.push(clickedChceckbox.value);
+      } else {
+        const checkboxIndex = thisBooking.starters.indexOf(clickedChceckbox.value);
+        thisBooking.starters.splice(checkboxIndex, 1);
+      }
+    });
+
+    thisBooking.dom.submitBtn.addEventListener('click', function(event) {
+      event.preventDefault();
+      thisBooking.sendBooking();
+      thisBooking.getData();  
     });
   }
 }
