@@ -12,7 +12,6 @@ class Booking {
     thisBooking.render(element);
     thisBooking.initWidgets();
     thisBooking.getData();
-
   }
 
   getData() {

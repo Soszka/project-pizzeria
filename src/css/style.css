@@ -692,6 +692,7 @@ input, select {
   margin: 48px auto;
 }
 
+
 .subpages-links {
   display: flex;
   margin-top: 36px;
@@ -703,8 +704,7 @@ input, select {
 .subpages-links img {
   height: 100px;
   width: 320px;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
 
 .subpages-ordering {
